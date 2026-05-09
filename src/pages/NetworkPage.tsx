@@ -105,7 +105,7 @@ function ArtistProfileModal({ profile, onClose }: { profile: Profile, onClose: (
 
   useEffect(() => {
     async function fetchArtworks() {
-      const { data } = await supabase.from('artworks').select('*').eq('artist_id', profile.id).order('created_at', { ascending: false }).limit(9);
+      const { data } = await supabase.from('artworks').select('*').eq('profile_id', profile.id).order('created_at', { ascending: false }).limit(9);
       if (data) setArtworks(data);
     }
     fetchArtworks();
@@ -185,7 +185,7 @@ export function NetworkPage() {
       
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, full_name, avatar_url, bio, instagram_handle, is_artist, is_association, association_name')
         .eq(targetRole === 'artist' ? 'is_artist' : 'is_association', true)
         .limit(50);
         

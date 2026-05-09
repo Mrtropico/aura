@@ -40,8 +40,10 @@ export function OnboardingPage() {
     }
     setLoading(true);
     await activateRole('artist');
-    localStorage.setItem('aura_disciplines', JSON.stringify(selectedDisciplines));
-    await supabase.from('profiles').update({ instagram_handle: instagram }).eq('id', user.id);
+    await supabase.from('profiles').update({
+      instagram_handle: instagram,
+      discipline: JSON.stringify(selectedDisciplines),
+    }).eq('id', user.id);
     
     await supabase.from('feed_events').insert([{
       actor_id: user.id,

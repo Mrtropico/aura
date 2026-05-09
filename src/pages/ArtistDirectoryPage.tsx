@@ -30,7 +30,7 @@ export function ArtistDirectoryPage() {
         return;
       }
       
-      const { data, error } = await supabase.from('profiles').select('*').eq('is_artist', true);
+      const { data, error } = await supabase.from('profiles').select('id, full_name, avatar_url, bio, is_artist').eq('is_artist', true);
       if (!error && data) {
          setArtists(data as Profile[]);
       }

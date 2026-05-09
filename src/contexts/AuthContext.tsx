@@ -14,6 +14,7 @@ export type Profile = {
   association_name?: string;
   member_id?: string;
   instagram_handle?: string;
+  discipline?: string;
   created_at?: any;
   updated_at?: any;
 };

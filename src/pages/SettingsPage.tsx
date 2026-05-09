@@ -138,15 +138,18 @@ export function SettingsPage() {
         await activateRole('member', { member_id: foundMember.id });
         setRoleToActivate(null);
       } else if (roleToActivate === 'association') {
-        const { data, error } = await supabase.from('admin_codes').select('code').eq('code', activationCode).single();
-        const correctCode = !error && data;
-        
-        if (correctCode) {
+        const { data: codeValid, error: rpcError } = await supabase.rpc('redeem_admin_code', { p_code: activationCode });
+
+        if (rpcError) {
+          toast.error("Erreur lors de la validation du code");
+          setCodeError(true);
+        } else if (codeValid === true) {
           await activateRole('association', { association_name: assoNameInput });
           setRoleToActivate(null);
           setCodeError(false);
         } else {
           setCodeError(true);
+          toast.error("Code invalide ou déjà utilisé");
         }
       }
     } catch (err) {
