@@ -4,7 +4,7 @@ import { SignUpForm } from '../components/auth/SignUpForm';
 import { motion } from 'motion/react';
 import { Sparkles, User, Building2, UserCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function LoginPage() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
@@ -102,6 +102,20 @@ export function LoginPage() {
         <p className="mt-10 text-center text-neutral-300 text-[10px] font-bold uppercase tracking-[0.3em]">
           VSL — Vivre Sa Liberté
         </p>
+
+        <div className="mt-6 flex flex-wrap justify-center gap-3 text-center">
+          <Link to="/legal/mentions-legales" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
+            Mentions légales
+          </Link>
+          <span className="text-neutral-200 text-[9px]">·</span>
+          <Link to="/legal/cgu" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
+            CGU
+          </Link>
+          <span className="text-neutral-200 text-[9px]">·</span>
+          <Link to="/legal/confidentialite" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
+            Confidentialité
+          </Link>
+        </div>
       </motion.div>
     </div>
   );

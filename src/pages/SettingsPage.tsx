@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { uploadImage as uploadToSupabase } from '../lib/storage';
@@ -10,7 +10,8 @@ import { toast } from 'sonner';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
 import { cn } from '../lib/utils';
 export function SettingsPage() {
-  const { profile, user, refreshProfile, activateRole, deactivateRole, deleteAccount } = useAuth();
+  const { profile, user, refreshProfile, activateRole, deactivateRole } = useAuth();
+  const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [success, setSuccess] = useState(false);
   const [form, setForm] = useState({
@@ -160,13 +161,49 @@ export function SettingsPage() {
   };
 
   const confirmDeleteAccount = async () => {
+    const confirmation = window.prompt(
+      "Cette action est définitive. Toutes vos données (profil, œuvres, finances, ventes, abonnements) seront supprimées immédiatement et irréversiblement.\n\nPour confirmer, tapez SUPPRIMER en majuscules :"
+    );
+    if (confirmation !== 'SUPPRIMER') {
+      toast.error('Suppression annulée');
+      setShowDeleteAccountModal(false);
+      return;
+    }
+
     setBusy(true);
-    const { error } = await deleteAccount();
-    if (error) {
-      toast.error(error);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error('Session expirée, reconnectez-vous');
+        setBusy(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        toast.error(result.error || 'Erreur lors de la suppression');
+        setBusy(false);
+        return;
+      }
+
+      await supabase.auth.signOut();
+      toast.success('Compte supprimé');
+      navigate('/');
+    } catch (err: any) {
+      toast.error(err?.message || 'Erreur réseau');
       setBusy(false);
-    } else {
-      toast.success("Votre compte a été supprimé.");
     }
   };
 
@@ -450,6 +487,20 @@ export function SettingsPage() {
         description="Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible et supprimera toutes vos données."
         confirmLabel="Supprimer définitivement"
       />
+
+      <footer className="pt-8 mt-8 border-t border-neutral-100 flex flex-wrap gap-4 justify-center">
+        <Link to="/legal/mentions-legales" className="text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-brand-ink transition-colors">
+          Mentions légales
+        </Link>
+        <span className="text-neutral-200">·</span>
+        <Link to="/legal/cgu" className="text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-brand-ink transition-colors">
+          CGU
+        </Link>
+        <span className="text-neutral-200">·</span>
+        <Link to="/legal/confidentialite" className="text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-brand-ink transition-colors">
+          Confidentialité
+        </Link>
+      </footer>
     </div>
   );
 }

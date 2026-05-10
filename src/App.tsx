@@ -5,6 +5,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Shell } from './components/layout/Shell';
 import { LoginPage } from './pages/LoginPage';
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
+import { CookieBanner } from './components/layout/CookieBanner';
+import { LegalPage } from './pages/LegalPage';
 
 // Lazy loading pages
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(m => ({ default: m.OnboardingPage })));
@@ -76,6 +78,7 @@ export default function App() {
     <AuthProvider>
       <Toaster position="top-right" richColors theme="light" />
       <BrowserRouter>
+        <CookieBanner />
         <Suspense fallback={
           <div className="h-screen grid place-items-center bg-brand-canvas">
             <div className="text-center">
@@ -86,6 +89,7 @@ export default function App() {
         }>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/legal/:slug" element={<LegalPage />} />
             <Route path="/onboarding" element={<Protected><OnboardingPage /></Protected>} />
             <Route element={<Protected><Shell /></Protected>}>
               <Route path="/" element={<ErrorBoundary><MapPage /></ErrorBoundary>} />
