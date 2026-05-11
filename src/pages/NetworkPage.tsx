@@ -32,7 +32,7 @@ function FeedItem({ event }: { event: FeedEvent, key?: string | number }) {
         <p className="text-sm font-medium text-neutral-900 leading-snug">
           <span className="font-black italic mr-1">{event.actor_name}</span>
           {event.action_type === 'started_flash' ? "a lancé une Rencontre Flash" :
-           event.action_type === 'joined' ? "a rejoint AURA" :
+           event.action_type === 'joined' ? "a rejoint L'Atelier" :
            "a mis à jour son portfolio"}
         </p>
         
@@ -162,6 +162,88 @@ function ArtistProfileModal({ profile, onClose }: { profile: Profile, onClose: (
   );
 }
 
+function AssoProfileModal({ profile, onClose }: { profile: Profile, onClose: () => void }) {
+  const links = [
+    profile.helloasso_url && {
+      href: profile.helloasso_url,
+      label: 'Adhérer / Soutenir',
+      className: 'bg-[#fb7d4b] text-white hover:bg-[#e06b39]',
+      icon: <ExternalLink size={16} />,
+    },
+    profile.website_url && {
+      href: profile.website_url,
+      label: 'Site web',
+      className: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200',
+      icon: <ExternalLink size={16} />,
+    },
+    profile.instagram_handle && {
+      href: `https://instagram.com/${profile.instagram_handle}`,
+      label: `@${profile.instagram_handle}`,
+      className: 'bg-brand-rose/10 text-brand-rose hover:bg-brand-rose hover:text-white',
+      icon: <Instagram size={16} />,
+    },
+    profile.facebook_url && {
+      href: profile.facebook_url,
+      label: 'Facebook',
+      className: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200',
+      icon: <ExternalLink size={16} />,
+    },
+    profile.mastodon_url && {
+      href: profile.mastodon_url,
+      label: 'Mastodon',
+      className: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200',
+      icon: <ExternalLink size={16} />,
+    },
+  ].filter(Boolean) as { href: string; label: string; className: string; icon: React.ReactNode }[];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-brand-ink/40 backdrop-blur-md" onClick={onClose} />
+      <motion.div
+        initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className="bg-white w-full max-w-lg rounded-t-[3rem] md:rounded-[3rem] relative z-10 flex flex-col overflow-hidden shadow-2xl"
+      >
+        <div className="p-6 flex justify-between items-center border-b border-neutral-100 sticky top-0 bg-white/90 backdrop-blur z-20">
+          <div>
+            <h3 className="text-xl font-black uppercase italic text-brand-ink leading-tight">{profile.association_name || profile.full_name}</h3>
+            <p className="text-[9px] font-black uppercase tracking-widest text-brand-turquoise mt-0.5">Collectif</p>
+          </div>
+          <button onClick={onClose} className="p-3 bg-neutral-100 hover:bg-neutral-200 rounded-full transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="p-8 space-y-6 overflow-y-auto">
+          {profile.bio && (
+            <p className="text-sm font-medium text-neutral-500 leading-relaxed">{profile.bio}</p>
+          )}
+
+          {links.length > 0 && (
+            <div className="space-y-3">
+              {links.map((link, i) => (
+                <a
+                  key={i}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`flex items-center gap-3 w-full px-5 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${link.className}`}
+                >
+                  {link.icon}
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {links.length === 0 && (
+            <p className="text-xs text-neutral-300 font-medium italic text-center py-6">Aucun lien renseigné pour le moment.</p>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 export function NetworkPage() {
   const { profile, activeRole, isDemo } = useAuth();
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -185,7 +267,7 @@ export function NetworkPage() {
       
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, full_name, avatar_url, bio, instagram_handle, is_artist, is_association, association_name')
+        .select('id, full_name, avatar_url, bio, instagram_handle, is_artist, is_association, association_name, helloasso_url, website_url, facebook_url, mastodon_url')
         .eq(targetRole === 'artist' ? 'is_artist' : 'is_association', true)
         .limit(50);
         
@@ -297,7 +379,9 @@ export function NetworkPage() {
       
       <AnimatePresence>
         {selectedProfile && (
-          <ArtistProfileModal profile={selectedProfile} onClose={() => setSelectedProfile(null)} />
+          selectedProfile.is_association
+            ? <AssoProfileModal profile={selectedProfile} onClose={() => setSelectedProfile(null)} />
+            : <ArtistProfileModal profile={selectedProfile} onClose={() => setSelectedProfile(null)} />
         )}
       </AnimatePresence>
     </div>

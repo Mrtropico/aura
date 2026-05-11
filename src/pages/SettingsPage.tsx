@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { uploadImage as uploadToSupabase } from '../lib/storage';
-import { User, Mail, Camera, Building, Info, Check, Loader2, Palette, Shield, Building2, Users as UsersIcon, Search, ChevronRight } from 'lucide-react';
+import { User, Mail, Camera, Building, Info, Check, Loader2, Palette, Shield, Building2, Users as UsersIcon, Search, ChevronRight, Globe, ExternalLink, Instagram } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 
@@ -19,6 +19,10 @@ export function SettingsPage() {
     bio: profile?.bio ?? '',
     association_name: profile?.association_name ?? '',
     instagram_handle: profile?.instagram_handle ?? '',
+    helloasso_url: profile?.helloasso_url ?? '',
+    website_url: profile?.website_url ?? '',
+    facebook_url: profile?.facebook_url ?? '',
+    mastodon_url: profile?.mastodon_url ?? '',
   });
 
   // Role Activation states
@@ -77,6 +81,10 @@ export function SettingsPage() {
         bio: form.bio,
         association_name: form.association_name,
         instagram_handle: form.instagram_handle || null,
+        helloasso_url: form.helloasso_url || null,
+        website_url: form.website_url || null,
+        facebook_url: form.facebook_url || null,
+        mastodon_url: form.mastodon_url || null,
         updated_at: new Date().toISOString(),
       }).eq('id', user.id);
       await refreshProfile();
@@ -298,6 +306,69 @@ export function SettingsPage() {
             </div>
           </div>
 
+          {/* Liens publics — visible uniquement pour le rôle Collectif */}
+          {profile.is_association && (
+            <div className="space-y-4 pt-6 border-t border-neutral-100">
+              <div className="flex items-center gap-2 mb-2">
+                <Globe size={16} className="text-brand-turquoise" />
+                <label className="text-[10px] font-black uppercase tracking-widest text-neutral-500">Liens publics de l'association</label>
+              </div>
+
+              <div className="space-y-3">
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-[#fb7d4b] uppercase tracking-widest">HA</span>
+                  <input
+                    type="url"
+                    placeholder="https://www.helloasso.com/associations/..."
+                    className={cn(inputCls, "pl-12")}
+                    value={form.helloasso_url}
+                    onChange={e => setForm(f => ({ ...f, helloasso_url: e.target.value }))}
+                  />
+                </div>
+                <div className="relative">
+                  <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300" size={16} />
+                  <input
+                    type="url"
+                    placeholder="https://votre-site.fr"
+                    className={cn(inputCls, "pl-12")}
+                    value={form.website_url}
+                    onChange={e => setForm(f => ({ ...f, website_url: e.target.value }))}
+                  />
+                </div>
+                <div className="relative">
+                  <Instagram className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300" size={16} />
+                  <input
+                    type="text"
+                    placeholder="@votre.handle (Instagram)"
+                    className={cn(inputCls, "pl-12")}
+                    value={form.instagram_handle}
+                    onChange={e => setForm(f => ({ ...f, instagram_handle: e.target.value.replace(/[^a-zA-Z0-9._]/g, '') }))}
+                  />
+                </div>
+                <div className="relative">
+                  <ExternalLink className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300" size={16} />
+                  <input
+                    type="url"
+                    placeholder="https://facebook.com/votre-page"
+                    className={cn(inputCls, "pl-12")}
+                    value={form.facebook_url}
+                    onChange={e => setForm(f => ({ ...f, facebook_url: e.target.value }))}
+                  />
+                </div>
+                <div className="relative">
+                  <ExternalLink className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-300" size={16} />
+                  <input
+                    type="url"
+                    placeholder="https://mastodon.social/@votre-compte"
+                    className={cn(inputCls, "pl-12")}
+                    value={form.mastodon_url}
+                    onChange={e => setForm(f => ({ ...f, mastodon_url: e.target.value }))}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-center justify-between pt-8 border-t border-neutral-50">
             <div className="flex items-center gap-3">
               {success && (
@@ -328,7 +399,7 @@ export function SettingsPage() {
       <section id="roles-section" className="space-y-6">
         <div className="flex items-center gap-3 px-1">
           <Shield className="text-brand-turquoise" size={24} />
-          <h2 className="text-xl font-black tracking-tight text-brand-ink uppercase italic">Mes Espaces</h2>
+          <h2 className="text-xl font-black tracking-tight text-brand-ink uppercase italic">Mes rôles</h2>
         </div>
 
         <div className="grid gap-4">
@@ -458,14 +529,14 @@ export function SettingsPage() {
         )}
       </AnimatePresence>
       
-      <section className="bg-red-50/30 rounded-[2.5rem] p-10 border border-red-100/50">
-        <h2 className="text-xl font-black text-red-900 mb-2 uppercase tracking-tight italic">Zone de danger</h2>
-        <p className="text-red-600/70 text-[10px] font-black uppercase tracking-widest mb-8 leading-relaxed italic">Supprimer votre compte effacera toutes vos données artistiques et financières de manière permanente.</p>
-        <button 
+      <section className="rounded-[2.5rem] p-10 border border-neutral-100">
+        <h2 className="text-sm font-black text-neutral-400 mb-2 uppercase tracking-widest">Désactiver mon compte</h2>
+        <p className="text-neutral-400 text-xs font-medium mb-6 leading-relaxed">La suppression de votre compte est définitive. Toutes vos données seront effacées.</p>
+        <button
           onClick={() => setShowDeleteAccountModal(true)}
           disabled={busy}
-          className="px-8 py-4 bg-white text-red-600 border border-red-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition-all flex items-center justify-center gap-2">
-          {busy ? <Loader2 className="animate-spin" size={16} /> : 'Désactiver mon compte utilisateur'}
+          className="px-6 py-3 bg-white text-neutral-500 border border-neutral-200 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-red-200 hover:text-red-500 transition-all flex items-center justify-center gap-2">
+          {busy ? <Loader2 className="animate-spin" size={16} /> : 'Supprimer mon compte'}
         </button>
       </section>
 

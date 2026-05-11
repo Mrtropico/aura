@@ -15,6 +15,10 @@ export type Profile = {
   member_id?: string;
   instagram_handle?: string;
   discipline?: string;
+  helloasso_url?: string;
+  website_url?: string;
+  facebook_url?: string;
+  mastodon_url?: string;
   created_at?: any;
   updated_at?: any;
 };

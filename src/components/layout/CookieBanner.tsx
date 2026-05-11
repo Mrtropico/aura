@@ -59,7 +59,7 @@ export function CookieBanner() {
                   Cookies essentiels uniquement
                 </h3>
                 <p className="text-xs text-white/70 leading-relaxed font-medium">
-                  AURA utilise uniquement des cookies strictement nécessaires au fonctionnement du service (authentification, sécurité). Aucun cookie publicitaire ou de tracking n'est utilisé.
+                  L'Atelier utilise uniquement des cookies strictement nécessaires au fonctionnement du service (authentification, sécurité). Aucun cookie publicitaire ou de tracking n'est utilisé.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-3 mt-5">

@@ -49,7 +49,7 @@ export function TopBar() {
           </button>
         ) : (
           <NavLink to="/" className="text-xl font-black tracking-tighter text-brand-ink uppercase italic leading-none block">
-            AURA
+            L'Atelier
           </NavLink>
         )}
       </div>

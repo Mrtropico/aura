@@ -28,7 +28,7 @@ export function LoginPage() {
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-turquoise via-brand-rose to-brand-orange opacity-20" />
           
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-black tracking-tight text-brand-ink mb-2 uppercase italic">AURA</h1>
+            <h1 className="text-3xl font-black tracking-tight text-brand-ink mb-2 uppercase italic">L'Atelier</h1>
             <p className="text-sm text-neutral-400 font-medium lowercase tracking-tight italic">la carte vivante des créateurs et des assos près de chez vous</p>
           </div>
 
@@ -56,7 +56,7 @@ export function LoginPage() {
           </div>
 
           <div className="mt-10 pt-8 border-t border-neutral-50 relative z-10 text-center">
-            <p className="text-[10px] uppercase tracking-widest text-neutral-300 font-bold mb-6">Accès Démonstration Rapide</p>
+            <p className="text-[10px] uppercase tracking-widest text-neutral-300 font-bold mb-6">Essayer sans s'inscrire</p>
             
             <div className="grid grid-cols-1 gap-3">
               <button 
@@ -93,14 +93,11 @@ export function LoginPage() {
               </button>
             </div>
             
-            <p className="mt-6 text-[9px] text-neutral-300 font-medium leading-relaxed uppercase tracking-tighter">
-              Explorez l'interface instantanément
-            </p>
           </div>
         </div>
 
         <p className="mt-10 text-center text-neutral-300 text-[10px] font-bold uppercase tracking-[0.3em]">
-          AURA — La création, près de chez vous
+          L'Atelier — Un outil pour les créateurs et les associations · Fait à Toulouse avec ❤️
         </p>
 
         <div className="mt-6 flex flex-wrap justify-center gap-3 text-center">

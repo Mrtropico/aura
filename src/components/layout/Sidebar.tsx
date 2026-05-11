@@ -63,7 +63,7 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex w-64 min-h-screen bg-white border-r border-neutral-100 flex-col p-6 gap-1 sticky top-0">
       <NavLink to="/" className="mb-10 px-3 block">
-        <h1 className="text-2xl font-black tracking-tighter text-brand-ink uppercase italic">AURA</h1>
+        <h1 className="text-2xl font-black tracking-tighter text-brand-ink uppercase italic">L'Atelier</h1>
         <p className={cn("text-[9px] font-black uppercase tracking-[0.2em] mt-1", activeColor)}>
           {activeRole ? `Espace ${activeRole === 'artist' ? 'Créateur' : activeRole === 'member' ? 'Explorateur' : 'Collectif'}` : 'Découvrir'}
         </p>

@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import { Plus, MapPin, X, Loader2, Calendar } from 'lucide-react';
+import { Plus, MapPin, X, Loader2, Calendar, Radio } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { toast } from 'sonner';
@@ -32,8 +32,9 @@ const ICONS: Record<string, L.DivIcon> = {
   exposition: createCustomIcon('#E8507A'),
   performance: createCustomIcon('#0ABAB5'),
   atelier_ouvert: createCustomIcon('#F97316'),
-  rencontre_flash: createCustomIcon('#A855F7'), // Vibrant purple
-  autre: createCustomIcon('#0F172A')
+  rencontre_flash: createCustomIcon('#A855F7'),
+  radio: createCustomIcon('#FCD34D'),
+  autre: createCustomIcon('#0F172A'),
 };
 
 function RecenterButton({ userPosition }: { userPosition: [number, number] | null }) {
@@ -66,12 +67,14 @@ interface MapActivity {
   creator_type: 'artist' | 'association';
   title: string;
   description: string;
-  type: 'exposition' | 'performance' | 'atelier_ouvert' | 'rencontre_flash' | 'autre';
+  type: 'exposition' | 'performance' | 'atelier_ouvert' | 'rencontre_flash' | 'radio' | 'autre';
   lat: number;
   lng: number;
   address: string;
   start_date: any;
   end_date?: any;
+  radio_stream_url?: string;
+  radio_frequency?: string;
 }
 
 export function MapPage() {
@@ -93,6 +96,8 @@ export function MapPage() {
     lat: 20,
     lng: 0,
     start_date: '',
+    radio_stream_url: '',
+    radio_frequency: '',
   });
 
   // Form state flash
@@ -216,9 +221,11 @@ export function MapPage() {
         lng: form.lng,
         address: form.address,
         start_date: new Date(form.start_date).toISOString(),
+        radio_stream_url: form.type === 'radio' ? (form.radio_stream_url || null) : null,
+        radio_frequency: form.type === 'radio' ? (form.radio_frequency || null) : null,
       }]);
       setShowAddModal(false);
-      setForm({ ...form, title: '', description: '', start_date: '' });
+      setForm({ ...form, title: '', description: '', start_date: '', radio_stream_url: '', radio_frequency: '' });
       toast.success("Événement ajouté avec succès sur la carte");
     } catch (err) {
       toast.error("Échec lors de l'ajout sur la carte");
@@ -256,26 +263,27 @@ export function MapPage() {
         </MapContainer>
       </div>
 
-      {/* Floating Controls */}
+      {/* Floating Controls — top bar */}
       <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none z-10">
         <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/20 shadow-xl pointer-events-auto flex items-center gap-4">
           <MapPin className="text-brand-turquoise" size={20} />
           <div>
             <h2 className="text-[10px] font-black uppercase tracking-widest text-brand-ink">Carte Ouverte</h2>
-            <p className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest italic">{activities.length} trace{activities.length !== 1 ? 's' : ''} en cours</p>
+            <p className="text-[8px] font-bold text-neutral-400 uppercase tracking-widest italic">{activities.length} épingle{activities.length !== 1 ? 's' : ''} active{activities.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
 
+        {/* Desktop buttons — hidden on mobile */}
         {(activeRole === 'artist' || activeRole === 'association') && (
-          <div className="flex gap-4">
-            <button 
+          <div className="hidden sm:flex gap-4">
+            <button
               onClick={() => setShowFlashModal(true)}
               className="h-14 px-6 bg-brand-primary text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:scale-105 active:scale-95 transition-all pointer-events-auto flex items-center gap-2"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               Flash
             </button>
-            <button 
+            <button
               onClick={() => setShowAddModal(true)}
               className="h-14 px-8 bg-brand-ink text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl hover:scale-105 active:scale-95 transition-all pointer-events-auto flex items-center gap-3"
             >
@@ -285,6 +293,26 @@ export function MapPage() {
           </div>
         )}
       </div>
+
+      {/* Mobile FABs — visible only on small screens */}
+      {(activeRole === 'artist' || activeRole === 'association') && (
+        <div className="sm:hidden absolute bottom-6 right-4 flex flex-col gap-3 z-20 pointer-events-auto">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="w-14 h-14 bg-brand-ink text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all"
+            aria-label="Épingler une activité"
+          >
+            <Plus size={22} />
+          </button>
+          <button
+            onClick={() => setShowFlashModal(true)}
+            className="w-14 h-14 bg-brand-primary text-white rounded-full shadow-[0_0_20px_rgba(168,85,247,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all"
+            aria-label="Lancer un Flash"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </button>
+        </div>
+      )}
 
       {/* Selected Info Sidebar */}
       <AnimatePresence>
@@ -316,6 +344,28 @@ export function MapPage() {
                 <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Par {selectedPin.creator_name}</p>
               </div>
 
+              {/* Radio specifics */}
+              {selectedPin.type === 'radio' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 space-y-3">
+                  <div className="flex items-center gap-2 text-yellow-700">
+                    <Radio size={16} />
+                    {selectedPin.radio_frequency && (
+                      <span className="text-sm font-black">{selectedPin.radio_frequency}</span>
+                    )}
+                  </div>
+                  {selectedPin.radio_stream_url && (
+                    <a
+                      href={selectedPin.radio_stream_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2 w-full py-3 px-4 bg-yellow-400 text-yellow-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-yellow-300 transition-colors"
+                    >
+                      🎙️ Écouter en direct
+                    </a>
+                  )}
+                </div>
+              )}
+
               <p className="text-sm text-neutral-500 font-medium leading-relaxed italic">{selectedPin.description}</p>
 
               <div className="space-y-3 pt-6 border-t border-neutral-50">
@@ -329,7 +379,7 @@ export function MapPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="p-8 bg-neutral-50 border-t border-neutral-100">
               <button onClick={() => setSelectedPin(null)} className="w-full py-4 bg-brand-ink text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em]">
                 Fermer
@@ -458,7 +508,7 @@ export function MapPage() {
                   </div>
                   <div className="space-y-1.5">
                     <label className={labelCls}>Type</label>
-                    <select 
+                    <select
                       className={inputCls}
                       value={form.type}
                       onChange={e => setForm({...form, type: e.target.value as MapActivity['type']})}
@@ -466,6 +516,7 @@ export function MapPage() {
                       <option value="exposition">Exposition</option>
                       <option value="performance">Performance</option>
                       <option value="atelier_ouvert">Atelier Ouvert</option>
+                      <option value="radio">Passage Radio</option>
                       <option value="autre">Autre</option>
                     </select>
                   </div>
@@ -505,9 +556,36 @@ export function MapPage() {
                   </div>
                 </div>
 
+                {/* Radio-specific fields */}
+                {form.type === 'radio' && (
+                  <div className="space-y-3 p-4 bg-yellow-50 border border-yellow-200 rounded-2xl">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-yellow-700">Infos Passage Radio</p>
+                    <div className="space-y-1.5">
+                      <label className={labelCls}>URL Streaming</label>
+                      <input
+                        type="url"
+                        placeholder="https://stream.radio.fr/..."
+                        className={inputCls}
+                        value={form.radio_stream_url}
+                        onChange={e => setForm({...form, radio_stream_url: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className={labelCls}>Fréquence FM (optionnel)</label>
+                      <input
+                        type="text"
+                        placeholder="92.3 MHz Toulouse"
+                        className={inputCls}
+                        value={form.radio_frequency}
+                        onChange={e => setForm({...form, radio_frequency: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-1.5">
                   <label className={labelCls}>Description</label>
-                  <textarea 
+                  <textarea
                     rows={3}
                     placeholder="Dites-en plus sur cet événement..."
                     className={cn(inputCls, "resize-none")}

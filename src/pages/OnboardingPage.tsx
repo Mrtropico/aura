@@ -89,7 +89,7 @@ export function OnboardingPage() {
               exit={{ opacity: 0, scale: 1.05 }}
               className="bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border border-neutral-100 text-center"
             >
-              <h1 className="text-4xl font-black tracking-tight text-brand-ink mb-3 uppercase italic">Bienvenue sur AURA</h1>
+              <h1 className="text-4xl font-black tracking-tight text-brand-ink mb-3 uppercase italic">Bienvenue sur L'Atelier</h1>
               <p className="text-sm text-neutral-400 font-medium mb-12 italic">la carte vivante des créateurs et des assos près de chez vous.</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">

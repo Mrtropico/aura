@@ -28,7 +28,7 @@ function Protected({ children }: { children: ReactNode }) {
     <div className="h-screen grid place-items-center bg-brand-canvas">
       <div className="text-center">
         <div className="w-12 h-12 border-4 border-brand-turquoise/20 border-t-brand-turquoise rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Initialisation de AURA</p>
+        <p className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Chargement de L'Atelier…</p>
       </div>
     </div>
   );

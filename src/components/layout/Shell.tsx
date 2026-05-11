@@ -30,7 +30,7 @@ export function Shell() {
           </main>
           <footer className="hidden md:flex flex-col items-center gap-3 py-6 px-10 border-t border-neutral-100 mt-12">
             <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-200 italic">
-              AURA — la carte vivante des créateurs et des assos près de chez vous
+              L'Atelier — Un outil pour les créateurs et les associations · Fait à Toulouse avec ❤️
             </p>
             <div className="flex items-center gap-4">
               <Link to="/legal/mentions-legales" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">

@@ -29,7 +29,7 @@ export function MemberHomePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black tracking-tight text-neutral-900 uppercase italic">Bonjour, {profile?.full_name?.split(' ')[0]}</h1>
-          <p className="text-sm text-neutral-500 font-medium tracking-tight mt-1">Ravi de vous revoir sur AURA</p>
+          <p className="text-sm text-neutral-500 font-medium tracking-tight mt-1">Ravi de vous revoir sur L'Atelier</p>
         </div>
         <div className="w-12 h-12 rounded-2xl bg-brand-orange/10 flex items-center justify-center text-brand-orange">
           <Star size={24} fill="currentColor" />

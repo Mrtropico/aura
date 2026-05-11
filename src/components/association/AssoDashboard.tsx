@@ -33,7 +33,7 @@ export function AssoDashboard() {
       <div className="grid lg:grid-cols-2 gap-10">
         <section className="bg-white rounded-[2.5rem] p-8 border border-neutral-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-sm font-black uppercase tracking-widest text-neutral-400">Flux Adhérents</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest text-neutral-400">Mes adhérents</h2>
             <Link to="/members" className="w-10 h-10 rounded-xl bg-neutral-50 flex items-center justify-center text-neutral-400 hover:text-brand-ink transition-colors">
               <ArrowRight size={18} />
             </Link>
