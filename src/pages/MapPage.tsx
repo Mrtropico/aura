@@ -247,9 +247,10 @@ export function MapPage() {
           <LocationController position={userPosition} />
           <RecenterButton userPosition={userPosition} />
           <TileLayer
-            url="https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.png"
-            attribution='© <a href="https://stadiamaps.com/">Stadia Maps</a>, © <a href="https://stamen.com">Stamen Design</a>, © <a href="https://openstreetmap.org">OpenStreetMap</a>'
-            maxZoom={20}
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+            subdomains="abc"
+            maxZoom={19}
           />
           {activities.map(activity => (
             <Marker 
