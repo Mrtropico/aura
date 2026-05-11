@@ -36,7 +36,7 @@ export function Sidebar() {
       case 'association':
         return [
           map,
-          { to: '/admin', label: 'Pilotage', icon: LayoutDashboard },
+          { to: '/admin', label: 'Mon asso', icon: LayoutDashboard },
           { to: '/members', label: 'Adhérents', icon: Users },
           { to: '/accounting', label: 'Comptabilité', icon: Banknote },
           { to: '/artists', label: 'Artistes', icon: Palette },

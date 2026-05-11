@@ -351,7 +351,7 @@ export function SettingsPage() {
           <RoleToggleCard
             icon={Building2}
             label="Collectif"
-            desc="Pilotage, budget, CRM et gestion de vos créateurs."
+            desc="Gérez votre asso, budget, adhérents et créateurs."
             active={profile.is_association}
             onToggle={() => handleToggleRole('association')}
             color="turquoise"

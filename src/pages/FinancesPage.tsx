@@ -1,26 +1,31 @@
 import { useState } from 'react';
 import { useFinances } from '../hooks/useFinances';
 import { useSales } from '../hooks/useSales';
+import { useReserveRate, computeProRevenue } from '../hooks/useReserveRate';
 import { StatPill } from '../components/ui/StatPill';
 import { Modal } from '../components/ui/Modal';
 import { ExpenseForm } from '../components/artist/ExpenseForm';
 import { SaleForm } from '../components/artist/SaleForm';
 import { ConfirmModal } from '../components/ui/ConfirmModal';
-import { Wallet, TrendingUp, TrendingDown, Banknote, Plus, Search, Calendar, Trash2 } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Banknote, Plus, Search, Calendar, Trash2, Info } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export function FinancesPage() {
   const { items: finances, loading: finLoading, remove: removeFinance } = useFinances();
   const { items: sales, loading: salesLoading } = useSales();
+  const [reserveRate] = useReserveRate();
 
   const [modalType, setModalType] = useState<'expense' | 'sale' | null>(null);
   const [search, setSearch] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
+  const financesIncome = finances.filter(f => f.type === 'income');
   const totalRevenue = sales.reduce((a, s) => a + Number(s.amount), 0)
-    + finances.filter(f => f.type === 'income').reduce((a, f) => a + Number(f.amount), 0);
+    + financesIncome.reduce((a, f) => a + Number(f.amount), 0);
   const totalExpenses = finances.filter(f => f.type === 'expense').reduce((a, f) => a + Number(f.amount), 0);
-  const totalReserve = finances.reduce((a, f) => a + Number(f.charges_reserve_amount ?? 0), 0);
+  // Réserve fiscale : (revenus pro × taux) — calculée à la volée
+  const proRevenue = computeProRevenue(sales, financesIncome);
+  const totalReserve = Math.round(proRevenue * reserveRate) / 100;
   const net = totalRevenue - totalExpenses - totalReserve;
 
   const combined = [
@@ -153,12 +158,18 @@ export function FinancesPage() {
             <div className="w-full bg-white/10 h-2 rounded-full mt-4 mb-6 relative z-10">
               <div
                 className="bg-emerald-400 h-full rounded-full transition-all duration-1000"
-                style={{ width: `${Math.min(totalRevenue > 0 ? (totalReserve / totalRevenue) * 100 : 0, 100)}%` }}
+                style={{ width: `${Math.min(proRevenue > 0 ? (totalReserve / proRevenue) * 100 : 0, 100)}%` }}
               />
             </div>
             <p className="text-neutral-400 text-xs leading-relaxed relative z-10">
-              Auto-calculée sur chaque revenu professionnel ({finances.find(f => f.charges_reserve_rate)?.charges_reserve_rate ?? 22}%). À mettre de côté pour vos charges selon votre pays.
+              Auto-calculée à hauteur de <span className="text-white font-bold">{reserveRate}%</span> sur tes revenus pro ({proRevenue.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €).
             </p>
+            <div className="mt-4 pt-4 border-t border-white/10 flex items-start gap-2 relative z-10">
+              <Info size={12} className="text-neutral-500 flex-shrink-0 mt-0.5" />
+              <p className="text-[10px] text-neutral-500 leading-relaxed italic">
+                Estimation indicative. La fiscalité réelle dépend de votre statut (MDA, AGESSA, micro-BNC, etc.). Vérifiez avec un comptable.
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

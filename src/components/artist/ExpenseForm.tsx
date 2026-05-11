@@ -11,7 +11,6 @@ export function ExpenseForm({ onClose }: { onClose: () => void }) {
     category: 'Matériel',
     date: new Date().toISOString().split('T')[0],
     is_pro: true,
-    charges_reserve_rate: 22,
   });
 
   async function submit(e: FormEvent) {
@@ -24,7 +23,7 @@ export function ExpenseForm({ onClose }: { onClose: () => void }) {
       category: form.category,
       date: new Date(form.date).toISOString(),
       is_pro: form.is_pro,
-      charges_reserve_rate: form.charges_reserve_rate,
+      charges_reserve_rate: 0, // les dépenses ne génèrent pas de réserve fiscale
       receipt_url: '',
     });
     setBusy(false);
@@ -103,22 +102,6 @@ export function ExpenseForm({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {form.is_pro && (
-          <div>
-            <label className={labelCls}>Taux de réserve fiscale (%)</label>
-            <div className="flex items-center gap-4">
-              <input 
-                type="range" 
-                min="0" 
-                max="50" 
-                className="flex-1 h-2 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-neutral-900" 
-                value={form.charges_reserve_rate} 
-                onChange={e => setForm(f => ({ ...f, charges_reserve_rate: Number(e.target.value) }))}
-              />
-              <span className="w-12 text-sm font-black text-neutral-900">{form.charges_reserve_rate}%</span>
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="pt-6 border-t border-neutral-100">

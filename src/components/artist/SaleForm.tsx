@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { useSales } from '../../hooks/useSales';
 import { useArtworks } from '../../hooks/useArtworks';
-import { Loader2, TrendingUp, User } from 'lucide-react';
+import { useReserveRate } from '../../hooks/useReserveRate';
+import { Loader2, TrendingUp, User, Info } from 'lucide-react';
 
 export function SaleForm({ onClose }: { onClose: () => void }) {
   const { create } = useSales();
   const { items: artworks, update: updateArtwork } = useArtworks();
+  const [reserveRate, setReserveRate] = useReserveRate();
   const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
     amount: '',
@@ -15,16 +17,23 @@ export function SaleForm({ onClose }: { onClose: () => void }) {
     notes: '',
   });
 
+  const reserveAmount = form.amount ? Math.round(Number(form.amount) * reserveRate) / 100 : 0;
+
   async function submit(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
-    
+
+    // Note : la table `sales` n'a pas de colonne artwork_id en V1.
+    // L'association se fait via la mention dans `notes` + statut "vendu" sur l'œuvre.
+    const noteWithArtwork = form.artwork_id
+      ? `${form.notes ? form.notes + ' — ' : ''}Œuvre : ${selectedArtwork?.title || ''}`
+      : form.notes;
+
     await create({
       amount: Number(form.amount),
       buyer_name_free: form.buyer_name_free,
-      artwork_id: form.artwork_id || undefined,
       sale_date: new Date(form.sale_date).toISOString(),
-      notes: form.notes,
+      notes: noteWithArtwork,
     });
 
     // Mark artwork as sold if selected
@@ -102,13 +111,39 @@ export function SaleForm({ onClose }: { onClose: () => void }) {
 
         <div>
           <label className={labelCls}>Notes complémentaires</label>
-          <textarea 
-            rows={2} 
-            className={cn(inputCls, "resize-none")} 
-            value={form.notes} 
-            onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} 
+          <textarea
+            rows={2}
+            className={cn(inputCls, "resize-none")}
+            value={form.notes}
+            onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
             placeholder="Détails sur la vente..."
           />
+        </div>
+
+        {/* Réserve fiscale */}
+        <div className="pt-4 border-t border-neutral-100 space-y-3">
+          <label className={labelCls}>Taux de réserve fiscale (%)</label>
+          <div className="flex items-center gap-4">
+            <input
+              type="range"
+              min="0"
+              max="50"
+              className="flex-1 h-2 bg-neutral-100 rounded-lg appearance-none cursor-pointer accent-neutral-900"
+              value={reserveRate}
+              onChange={e => setReserveRate(Number(e.target.value))}
+            />
+            <span className="w-12 text-sm font-black text-neutral-900">{reserveRate}%</span>
+          </div>
+          <div className="bg-neutral-50 rounded-2xl p-4 flex items-center justify-between">
+            <span className="text-[10px] uppercase tracking-widest font-black text-neutral-500">À mettre de côté</span>
+            <span className="text-base font-black text-emerald-600">+{reserveAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Info size={11} className="text-neutral-400 flex-shrink-0 mt-0.5" />
+            <p className="text-[10px] text-neutral-400 leading-relaxed italic">
+              Estimation indicative. La fiscalité réelle dépend de votre statut (MDA, AGESSA, micro-BNC, etc.). Vérifiez avec un comptable.
+            </p>
+          </div>
         </div>
       </div>
 

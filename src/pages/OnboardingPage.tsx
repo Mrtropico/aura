@@ -90,7 +90,7 @@ export function OnboardingPage() {
               className="bg-white rounded-[3rem] p-8 md:p-12 shadow-xl border border-neutral-100 text-center"
             >
               <h1 className="text-4xl font-black tracking-tight text-brand-ink mb-3 uppercase italic">Bienvenue sur AURA</h1>
-              <p className="text-sm text-neutral-400 font-medium mb-12 italic">La carte vivante de la création mondiale.</p>
+              <p className="text-sm text-neutral-400 font-medium mb-12 italic">la carte vivante des créateurs et des assos près de chez vous.</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
                 <button
@@ -102,7 +102,7 @@ export function OnboardingPage() {
                   </div>
                   <div>
                     <h3 className="font-black text-xl uppercase tracking-widest mb-2">Créateur</h3>
-                    <p className="text-xs font-bold text-white/50 italic leading-relaxed">Je crée — peinture, musique, graffiti, photo. Je veux laisser ma trace.</p>
+                    <p className="text-xs font-bold text-white/50 italic leading-relaxed">Je crée — peinture, musique, graffiti, photo. Je veux partager mon univers.</p>
                   </div>
                 </button>
 
@@ -139,7 +139,7 @@ export function OnboardingPage() {
               <button onClick={() => setStep('choice')} className="text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-brand-ink mb-8 block transition-colors">
                 ← Retour
               </button>
-              <h2 className="text-3xl font-black tracking-tight text-brand-ink mb-2 uppercase italic">Votre Trace</h2>
+              <h2 className="text-3xl font-black tracking-tight text-brand-ink mb-2 uppercase italic">Votre Profil</h2>
               <p className="text-sm text-neutral-500 font-medium mb-8 italic">Quelle est votre discipline ? (plusieurs choix possibles)</p>
 
               <div className="space-y-8">
@@ -176,7 +176,7 @@ export function OnboardingPage() {
                   onClick={handleArtistSubmit}
                   className="w-full h-16 bg-brand-ink text-white rounded-[2rem] font-black text-[12px] uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-2xl transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  {loading ? <Loader2 className="animate-spin" /> : <>Laisser ma trace <ArrowRight size={18} /></>}
+                  {loading ? <Loader2 className="animate-spin" /> : <>C'est parti ! <ArrowRight size={18} /></>}
                 </button>
               </div>
             </motion.div>

@@ -29,7 +29,7 @@ export function LoginPage() {
           
           <div className="text-center mb-10">
             <h1 className="text-3xl font-black tracking-tight text-brand-ink mb-2 uppercase italic">AURA</h1>
-            <p className="text-sm text-neutral-400 font-medium lowercase tracking-tight italic">La carte vivante de la création mondiale</p>
+            <p className="text-sm text-neutral-400 font-medium lowercase tracking-tight italic">la carte vivante des créateurs et des assos près de chez vous</p>
           </div>
 
           <div className="flex bg-neutral-100 p-1 rounded-2xl mb-8">
@@ -100,7 +100,7 @@ export function LoginPage() {
         </div>
 
         <p className="mt-10 text-center text-neutral-300 text-[10px] font-bold uppercase tracking-[0.3em]">
-          VSL — Vivre Sa Liberté
+          AURA — La création, près de chez vous
         </p>
 
         <div className="mt-6 flex flex-wrap justify-center gap-3 text-center">

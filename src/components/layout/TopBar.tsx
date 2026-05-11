@@ -22,7 +22,7 @@ export function TopBar() {
       label: profile?.association_name || 'Collectif',
       icon: Building2,
       color: 'bg-brand-turquoise/10 text-brand-turquoise border-brand-turquoise/20',
-      desc: 'Pilotage et membres'
+      desc: 'Mon asso & membres'
     },
     member: {
       label: 'Explorateur',

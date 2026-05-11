@@ -34,7 +34,7 @@ export function BottomBar() {
       case 'association':
         return [
           map,
-          { to: '/admin', label: 'Pilotage', icon: LayoutDashboard },
+          { to: '/admin', label: 'Mon asso', icon: LayoutDashboard },
           { to: '/members', label: 'Adhérents', icon: Users },
           { to: '/accounting', label: 'Compta', icon: Banknote },
         ];

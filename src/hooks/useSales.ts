@@ -5,8 +5,6 @@ import { useAuth } from '../contexts/AuthContext';
 export type Sale = {
   id: string;
   profile_id: string;
-  artwork_id?: string;
-  buyer_member_id?: string;
   buyer_name_free: string;
   amount: number;
   sale_date: any;
@@ -31,11 +29,10 @@ export function useSales() {
         {
           id: 's1',
           profile_id: 'demo-user-id',
-          artwork_id: 'demo-1',
           buyer_name_free: 'Galerie Vivienne',
           amount: 1500,
           sale_date: '2023-10-01T00:00:00Z',
-          notes: 'Payé par virement',
+          notes: 'Payé par virement — Œuvre : Abstraction Bleue',
           created_at: new Date().toISOString(),
         }
       ]);
@@ -47,12 +44,11 @@ export function useSales() {
       const { data, error } = await supabase
         .from('sales')
         .select('*')
-        .eq('seller_id', user.id) // note: mapped seller_id
+        .eq('profile_id', user.id)
         .order('sale_date', { ascending: false });
 
       if (!error && data) {
-        const formattedData = data.map(d => ({...d, profile_id: d.seller_id}));
-        setItems(formattedData as Sale[]);
+        setItems(data as Sale[]);
       }
       setLoading(false);
     };
@@ -76,7 +72,7 @@ export function useSales() {
     try {
       const { error } = await supabase.from('sales').insert([{
         ...payload,
-        seller_id: user.id
+        profile_id: user.id
       }]);
       return { error: error?.message || null };
     } catch (error: any) {

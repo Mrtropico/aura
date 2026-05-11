@@ -13,7 +13,7 @@ export function AssoDashboard() {
     <div className="space-y-10 animate-in fade-in slide-up">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-brand-ink uppercase italic">Pilotage Asso</h1>
+          <h1 className="text-3xl font-black tracking-tight text-brand-ink uppercase italic">Mon Asso</h1>
           <p className="text-sm text-neutral-400 font-medium tracking-tight mt-1">Gérez votre communauté et vos adhérents avec fluidité.</p>
         </div>
         <div className="flex gap-3">

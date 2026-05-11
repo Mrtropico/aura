@@ -76,14 +76,13 @@ export function useArtworks() {
       const { data, error } = await supabase
         .from('artworks')
         .select('*')
-        .eq('creator_id', user.id) // note: profile_id mapped to creator_id in db schema
+        .eq('profile_id', user.id)
         .order('created_at', { ascending: false })
         .range(0, ITEMS_PER_PAGE - 1);
-        
+
       if (isMounted) {
         if (!error && data) {
-          const formattedData = data.map(d => ({...d, profile_id: d.creator_id}));
-          setItems(formattedData as Artwork[]);
+          setItems(data as Artwork[]);
           setHasMore(data.length === ITEMS_PER_PAGE);
         }
         setPage(0);
@@ -118,13 +117,12 @@ export function useArtworks() {
       const { data, error } = await supabase
         .from('artworks')
         .select('*')
-        .eq('creator_id', user.id)
+        .eq('profile_id', user.id)
         .order('created_at', { ascending: false })
         .range(from, to);
-        
+
       if (!error && data) {
-        const formattedData = data.map(d => ({...d, profile_id: d.creator_id}));
-        setItems(prev => [...prev, ...formattedData as Artwork[]]);
+        setItems(prev => [...prev, ...data as Artwork[]]);
         setHasMore(data.length === ITEMS_PER_PAGE);
         setPage(nextPage);
       }
@@ -140,7 +138,7 @@ export function useArtworks() {
     try {
       const { error } = await supabase.from('artworks').insert([{
         ...payload,
-        creator_id: user.id
+        profile_id: user.id
       }]);
       return { error: error?.message || null };
     } catch (error: any) {

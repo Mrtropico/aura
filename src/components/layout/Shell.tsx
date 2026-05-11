@@ -28,18 +28,23 @@ export function Shell() {
           <main className="flex-1 pb-24 md:pb-8 px-5 md:px-10 max-w-6xl mx-auto w-full">
             <Outlet />
           </main>
-          <footer className="hidden md:flex justify-center gap-4 py-6 px-10 border-t border-neutral-100 mt-12">
-            <Link to="/legal/mentions-legales" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
-              Mentions légales
-            </Link>
-            <span className="text-neutral-200">·</span>
-            <Link to="/legal/cgu" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
-              CGU
-            </Link>
-            <span className="text-neutral-200">·</span>
-            <Link to="/legal/confidentialite" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
-              Confidentialité
-            </Link>
+          <footer className="hidden md:flex flex-col items-center gap-3 py-6 px-10 border-t border-neutral-100 mt-12">
+            <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-200 italic">
+              AURA — la carte vivante des créateurs et des assos près de chez vous
+            </p>
+            <div className="flex items-center gap-4">
+              <Link to="/legal/mentions-legales" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
+                Mentions légales
+              </Link>
+              <span className="text-neutral-200">·</span>
+              <Link to="/legal/cgu" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
+                CGU
+              </Link>
+              <span className="text-neutral-200">·</span>
+              <Link to="/legal/confidentialite" className="text-[9px] font-black uppercase tracking-widest text-neutral-300 hover:text-neutral-500 transition-colors">
+                Confidentialité
+              </Link>
+            </div>
           </footer>
         </div>
       </div>

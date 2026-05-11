@@ -1,6 +1,7 @@
 import { useArtworks } from '../../hooks/useArtworks';
 import { useFinances } from '../../hooks/useFinances';
 import { useSales } from '../../hooks/useSales';
+import { useReserveRate, computeProRevenue } from '../../hooks/useReserveRate';
 import { StatPill } from '../ui/StatPill';
 import { Palette, Wallet, TrendingUp, Banknote, Plus, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -9,12 +10,17 @@ export function ArtistDashboard() {
   const { items: artworks } = useArtworks();
   const { items: finances } = useFinances();
   const { items: sales } = useSales();
+  const [reserveRate] = useReserveRate();
 
-  const totalSales = sales.reduce((a, s) => a + Number(s.amount), 0);
+  const financesIncome = finances.filter(f => f.type === 'income');
+  const totalSales = sales.reduce((a, s) => a + Number(s.amount), 0)
+    + financesIncome.reduce((a, f) => a + Number(f.amount), 0);
   const totalExpensesPro = finances
     .filter(f => f.type === 'expense' && f.is_pro)
     .reduce((a, f) => a + Number(f.amount), 0);
-  const totalReserve = finances.reduce((a, f) => a + Number(f.charges_reserve_amount ?? 0), 0);
+  // Réserve fiscale calculée à la volée sur les revenus pro
+  const proRevenue = computeProRevenue(sales, financesIncome);
+  const totalReserve = Math.round(proRevenue * reserveRate) / 100;
   const net = totalSales - totalExpensesPro - totalReserve;
 
   return (
